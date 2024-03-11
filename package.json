@@ -1,0 +1,17 @@
+{
+  "name": "drools-bpmn-test",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Maciej Barelkowski <maciej.barelkowski@camunda.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bpmn-moddle": "^9.0.1",
+    "xsd-schema-validator": "^0.9.0"
+  }
+}

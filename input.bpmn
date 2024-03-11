@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="null"/>
+  <bpmn2:itemDefinition id="ItemDefinition_1" structureRef="ObjectDataType"/>
+  <bpmn2:itemDefinition id="ItemDefinition_2"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19583" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.ModStatus"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19585" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.Modules"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19587" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.ModuleStatus"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19589" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.MaintStatus"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19591" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.Priority"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19593" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.MaintenanceType"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19595" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.InitiatorGroup"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_19596" structureRef="com.somecompany.syscomm.jbpm.model.MaintenanceInfo"/>
+  <bpmn2:itemDefinition id="ItemDefinition_3"/>
+  <bpmn2:itemDefinition id="ItemDefinition_4" structureRef="com.somecompany.syscomm.jbpm.model.NetworkInfo"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_29751" structureRef="com.somecompany.syscomm.jbpm.model.DataCenter"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_29753" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_29755" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_ItemDefinition_57859" structureRef="com.somecompany.syscomm.util.DateUtil"/>
+	<bpmn2:message id="_Message_183" itemRef="_ItemDefinition_29751" name="NetworkInfo_addDataCenter_dc"/>
+	<bpmn2:message id="_Message_184" itemRef="_ItemDefinition_29753" name="NetworkInfo_getDataCenters_Result"/>
+	<bpmn2:message id="_Message_185" itemRef="_ItemDefinition_29755" name="NetworkInfo_pruneIfNotRole_role"/>
+  <bpmn2:interface id="_Interface_13" implementationRef="com.somecompany.syscomm.jbpm.model.NetworkInfo" name="NetworkInfo">
+    <bpmn2:operation id="_Operation_153" implementationRef="addDataCenter" name="addDataCenter">
+      <bpmn2:inMessageRef>_Message_183</bpmn2:inMessageRef>
+    </bpmn2:operation>
+    <bpmn2:operation id="_Operation_154" implementationRef="getDataCenters" name="getDataCenters">
+      <bpmn2:inMessageRef>_Message_184</bpmn2:inMessageRef>
+    </bpmn2:operation>
+    <bpmn2:operation id="_Operation_155" implementationRef="pruneIfNotRole" name="pruneIfNotRole">
+      <bpmn2:inMessageRef>_Message_185</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="com.somecompany.peace.cancel.v6" tns:version="6" tns:packageName="defaultPackage" tns:adHoc="false" name="Cancel " isExecutable="true" processType="Private">
+    <bpmn2:extensionElements>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.ChecklistInfo"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.ChecklistItem"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.RoleChecklist"/>
+      <tns:import name="java.util.List"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.ModStatus"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.Modules"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.ModuleStatus"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.MaintStatus"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.Priority"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.MaintenanceType"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.MaintenanceInfo.InitiatorGroup"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.NetworkInfo"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.model.DataCenter"/>
+      <tns:import name="java.lang.String"/>
+      <tns:import name="com.somecompany.syscomm.jbpm.logger.WorkflowLogger"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="Approvers" itemSubjectRef="null"/>
+    <bpmn2:property id="Notifiers" itemSubjectRef="null"/>
+    <bpmn2:property id="PreMaintChecklist" itemSubjectRef="null"/>
+    <bpmn2:property id="maintenanceInfo" itemSubjectRef="_ItemDefinition_19596"/>
+    <bpmn2:property id="ExpandedTargets" itemSubjectRef="null"/>
+    <bpmn2:property id="cancellationRequest" itemSubjectRef="null"/>
+    <bpmn2:property id="SiebelTicketInfo" itemSubjectRef="null"/>
+    <bpmn2:property id="EmailList" itemSubjectRef="null"/>
+    <bpmn2:property id="EmailsToBeSent" itemSubjectRef="null"/>
+    <bpmn2:property id="UndoPreMaintChecklist" itemSubjectRef="null"/>
+    <bpmn2:property id="module" itemSubjectRef="_ItemDefinition_19585"/>
+    <bpmn2:startEvent id="_1" name="">
+      <bpmn2:outgoing>_1-_jbpm-unique-218</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:parallelGateway id="_jbpm-unique-218" name="Gateway" gatewayDirection="Diverging">
+      <bpmn2:incoming>_1-_jbpm-unique-218</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:parallelGateway id="_jbpm-unique-225" name="Gateway" gatewayDirection="Converging">
+      <bpmn2:incoming>_jbpm-unique-224-_jbpm-unique-225</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_14</bpmn2:incoming>
+      <bpmn2:outgoing>_jbpm-unique-225-_jbpm-unique-226</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:endEvent id="_jbpm-unique-226" name="End">
+      <bpmn2:incoming>_jbpm-unique-225-_jbpm-unique-226</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_jbpm-unique-218" tns:priority="1" name="" sourceRef="_1" targetRef="_jbpm-unique-218"/>
+    <bpmn2:sequenceFlow id="_jbpm-unique-225-_jbpm-unique-226" tns:priority="1" name="" sourceRef="_jbpm-unique-225" targetRef="_jbpm-unique-226"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="_jbpm-unique-218" targetRef="Task_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_jbpm-unique-218" targetRef="ScriptTask_2"/>
+    <bpmn2:task id="Task_2" tns:taskName="BuildUndoPreMaintChecklist" tns:displayName="BuildUndoPreMaintChecklist" tns:icon="task.png" name="BuildUndoPreMaintChecklist">
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_InputOutputSpecification_6">
+        <bpmn2:dataInput id="_DataInput_24" itemSubjectRef="null" name="PreMaintChecklist"/>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="null" name="UndoPreMaintChecklist"/>
+        <bpmn2:inputSet id="_InputSet_6" name="New Input Set">
+          <bpmn2:dataInputRefs>_DataInput_24</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_7" name="Output Set 7">
+          <bpmn2:dataOutputRefs>DataOutput_3</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_DataInputAssociation_24">
+        <bpmn2:sourceRef>PreMaintChecklist</bpmn2:sourceRef>
+        <bpmn2:targetRef>_DataInput_24</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_5">
+        <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
+        <bpmn2:targetRef>UndoPreMaintChecklist</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="Task_2" targetRef="ScriptTask_1"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_12</bpmn2:outgoing>
+      <bpmn2:script>kcontext.setVariable(&quot;module&quot;,MaintenanceInfo.Modules.UndoPreMaintenanceChecklisting);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_12" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="_jbpm-unique-224"/>
+    <bpmn2:callActivity id="_jbpm-unique-224" tns:waitForCompletion="true" tns:independent="false" name="Undo premaint" calledElement="com.somecompany.syscomm.peace.bpmn.checklist.v5">
+      <bpmn2:extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script></tns:script>
+        </tns:onEntry-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
+      <bpmn2:outgoing>_jbpm-unique-224-_jbpm-unique-225</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3">
+        <bpmn2:dataInput id="_jbpm-unique-224_maintenanceInfoInput" name="maintenanceInfo"/>
+        <bpmn2:dataInput id="_jbpm-unique-224_ChecklistInfoInput" name="ChecklistInfo"/>
+        <bpmn2:dataInput id="DataInput_4" itemSubjectRef="_ItemDefinition_19585" name="module"/>
+        <bpmn2:dataInput id="DataInput_1" itemSubjectRef="null" name="siebelTicketInfo"/>
+        <bpmn2:dataInput id="DataInput_2" itemSubjectRef="ItemDefinition_4" name="targetTree"/>
+        <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="null" name="ChecklistInfo"/>
+        <bpmn2:inputSet id="InputSet_3">
+          <bpmn2:dataInputRefs>_jbpm-unique-224_maintenanceInfoInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_jbpm-unique-224_ChecklistInfoInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_4</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_1</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_2</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_3">
+          <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_8">
+        <bpmn2:sourceRef>maintenanceInfo</bpmn2:sourceRef>
+        <bpmn2:targetRef>_jbpm-unique-224_maintenanceInfoInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_9">
+        <bpmn2:sourceRef>UndoPreMaintChecklist</bpmn2:sourceRef>
+        <bpmn2:targetRef>_jbpm-unique-224_ChecklistInfoInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_13">
+        <bpmn2:sourceRef>module</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_4</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>SiebelTicketInfo</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_1</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn2:sourceRef>ExpandedTargets</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_2</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
+        <bpmn2:targetRef>UndoPreMaintChecklist</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:callActivity>
+    <bpmn2:sequenceFlow id="_jbpm-unique-224-_jbpm-unique-225" tns:priority="1" name="" sourceRef="_jbpm-unique-224" targetRef="_jbpm-unique-225"/>
+    <bpmn2:scriptTask id="ScriptTask_2" name="Send Cancellation Emails" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_14</bpmn2:outgoing>
+      <bpmn2:script>LogItem li;
+CancellationRequest cancelRequest = (CancellationRequest) kcontext.getVariable(&quot;cancellationRequest&quot;);
+if(cancelRequest.forReschedule){
+	li = new LogItem(LogType.INFO, &quot;Reschedule&quot;, &quot;Received Reschedule Event &quot;);&#xD;
+	// li.ticketsToUpdate = siebelTicketInfo.allTickets();
+&#xD;
+
+	HashMap&lt;String, Object> additionalParams = new HashMap&lt;String, Object>();
+	additionalParams.put(&quot;reason&quot;, cancelRequest.reason);
+	additionalParams.put(&quot;newstarttime&quot;, com.somecompany.syscomm.util.DateUtil.isoToFormattedString(cancelRequest.startTimeISO));
+	additionalParams.put(&quot;newendtime&quot;, com.somecompany.syscomm.util.DateUtil.isoToFormattedString(cancelRequest.endTimeISO));
+	li.additionalParams = additionalParams;
+&#xD;
+	li.emailTemplate = &quot;MaintenanceReschedule&quot;;&#xD;
+	List&lt;String> toList = new ArrayList&lt;String>();&#xD;
+	toList.addAll(maintenanceInfo.notifiersList);&#xD;
+	li.to = toList;&#xD;
+	li.cc = &quot;ADMINS-tix@somecompany.com,ADMINS-shift@somecompany.com&quot;;&#xD;
+	li.subject = &quot;Maintenance Reschedule&quot;;
+	if(maintenanceInfo.siebelTicketID != null){&#xD;
+		li.subject = &quot; [SC-ADMINS #&quot; + maintenanceInfo.siebelTicketID+&quot;] &quot; + li.subject;&#xD;
+	}&#xD;
+}
+else{
+	li = new LogItem(LogType.INFO, &quot;Cancellation&quot;, &quot;Sending Cancellation Emails&quot;);&#xD;
+	//li.ticketsToUpdate = siebelTicketInfo.allTickets();&#xD;
+
+	HashMap&lt;String, Object> additionalParams = new HashMap&lt;String, Object>();
+	additionalParams.put(&quot;reason&quot;, cancelRequest.reason);
+	
+	li.additionalParams = additionalParams;&#xD;
+	li.emailTemplate = &quot;MaintenanceCancellation&quot;;&#xD;
+	List&lt;String> toList = new ArrayList&lt;String>();&#xD;
+	toList.addAll(maintenanceInfo.notifiersList);&#xD;
+	li.to = toList;&#xD;
+	li.cc = &quot;ADMINS-tix@somecompany.com,ADMINS-shift@somecompany.com&quot;;&#xD;
+	li.subject = &quot;Maintenance Cancellation&quot;;&#xD;
+	if(maintenanceInfo.siebelTicketID != null){&#xD;
+		li.subject = &quot; [SC-ADMINS #&quot; + maintenanceInfo.siebelTicketID+&quot;] &quot; + li.subject;&#xD;
+	}&#xD;
+}&#xD;
+kcontext.getKnowledgeRuntime().signalEvent(&quot;logevent&quot;, li, maintenanceInfo.processID);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_14" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="_jbpm-unique-225"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.somecompany.peace.cancel.v6">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="28.0" y="234.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_1" bpmnElement="_jbpm-unique-218">
+        <dc:Bounds height="48.0" width="48.0" x="117.0" y="235.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_2" bpmnElement="_jbpm-unique-225">
+        <dc:Bounds height="48.0" width="48.0" x="808.0" y="233.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_jbpm-unique-226">
+        <dc:Bounds height="48.0" width="48.0" x="903.0" y="235.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_4" bpmnElement="Task_2">
+        <dc:Bounds height="50.0" width="110.0" x="250.0" y="210.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="430.0" y="210.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_CallActivity_1" bpmnElement="_jbpm-unique-224">
+        <dc:Bounds height="48.0" width="155.0" x="580.0" y="219.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="410.0" y="305.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_jbpm-unique-218" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ParallelGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="52.0" y="258.0"/>
+        <di:waypoint xsi:type="dc:Point" x="141.0" y="259.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="_jbpm-unique-224-_jbpm-unique-225" sourceElement="BPMNShape_CallActivity_1" targetElement="BPMNShape_ParallelGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="735.0" y="243.0"/>
+        <di:waypoint xsi:type="dc:Point" x="767.0" y="243.0"/>
+        <di:waypoint xsi:type="dc:Point" x="767.0" y="257.0"/>
+        <di:waypoint xsi:type="dc:Point" x="808.0" y="257.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="_jbpm-unique-225-_jbpm-unique-226" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="832.0" y="257.0"/>
+        <di:waypoint xsi:type="dc:Point" x="927.0" y="259.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_16" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ParallelGateway_1" targetElement="BPMNShape_Task_4">
+        <di:waypoint xsi:type="dc:Point" x="166.0" y="259.0"/>
+        <di:waypoint xsi:type="dc:Point" x="203.0" y="259.0"/>
+        <di:waypoint xsi:type="dc:Point" x="203.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="250.0" y="235.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_Task_4" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="360.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="391.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="391.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="430.0" y="235.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_15" bpmnElement="SequenceFlow_12" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_CallActivity_1">
+        <di:waypoint xsi:type="dc:Point" x="540.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="558.0" y="235.0"/>
+        <di:waypoint xsi:type="dc:Point" x="558.0" y="243.0"/>
+        <di:waypoint xsi:type="dc:Point" x="580.0" y="243.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_ParallelGateway_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="141.0" y="284.0"/>
+        <di:waypoint xsi:type="dc:Point" x="141.0" y="330.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="330.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_19" bpmnElement="SequenceFlow_14" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ParallelGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="520.0" y="330.0"/>
+        <di:waypoint xsi:type="dc:Point" x="832.0" y="330.0"/>
+        <di:waypoint xsi:type="dc:Point" x="832.0" y="282.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
